@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "40198793514",
+    "firebase_url": "https://dal-app-c95d5-default-rtdb.firebaseio.com",
+    "project_id": "dal-app-c95d5",
+    "storage_bucket": "dal-app-c95d5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:40198793514:android:6faf37bcf25a382bc65653",
+        "android_client_info": {
+          "package_name": "com.x691.dalapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "40198793514-co9varn1o77q88hjcdq3b3ock8cu7t4s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjGTeI8VbEoDcVSenv9KyWZwn0kRnumBY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "40198793514-co9varn1o77q88hjcdq3b3ock8cu7t4s.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "40198793514-k038lm8cmn86et8ha956k809mmf6njba.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.x691.dalapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
