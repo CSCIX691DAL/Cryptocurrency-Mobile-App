@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dal_app/Authentication/Sign%20Up/sign_up_screen.dart';
 import 'package:dal_app/Authentication/password_recovery.dart';
 import 'package:dal_app/Misc.%20Views/FullScreenLoader.dart';
@@ -14,14 +15,25 @@ class SignInScreen extends StatefulWidget {
   @override
   VoidCallback createAccount;
   State<StatefulWidget> createState() => _SignInScreenState(callback: createAccount);
+
 }
 
 class _SignInScreenState extends State<SignInScreen> {
   VoidCallback callback;
 
   _SignInScreenState({@required this.callback});
+  void addData(){
 
+      Map<String, dynamic> demoData= {"Coin Name" : "Ethereum"};
+      CollectionReference collectionReference = FirebaseFirestore.instance
+          .collection("Currencies");
+      collectionReference.add(demoData);
+  }
   void signIn() async {
+    Map Currencies;
+
+
+
     await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailController.text,
         password: passwordController.text
@@ -106,7 +118,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             width: double.infinity,
                             height: 60,
                             child: MaterialButton(
-                              onPressed: ()=>signIn(),
+                              onPressed: ()=>addData(),
                               child: Text("Sign In", style: TextStyle(fontSize: 20),),
                               textColor: Colors.white,
                               color: Theme.of(context).primaryColor,

@@ -1,42 +1,34 @@
 {
   "project_info": {
-    "project_number": "40198793514",
-    "firebase_url": "https://dal-app-c95d5-default-rtdb.firebaseio.com",
-    "project_id": "dal-app-c95d5",
-    "storage_bucket": "dal-app-c95d5.appspot.com"
+    "project_number": "1031459320115",
+    "project_id": "crypto-currency-trader-mobile",
+    "storage_bucket": "crypto-currency-trader-mobile.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:40198793514:android:6faf37bcf25a382bc65653",
+        "mobilesdk_app_id": "1:1031459320115:android:bb98a300b300253d40ce46",
         "android_client_info": {
-          "package_name": "com.x691.dalapp"
+          "package_name": "com.dal.cryptomobile"
         }
       },
       "oauth_client": [
         {
-          "client_id": "40198793514-co9varn1o77q88hjcdq3b3ock8cu7t4s.apps.googleusercontent.com",
+          "client_id": "1031459320115-199eehvim0usn1hchvead6imvgc7i060.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBjGTeI8VbEoDcVSenv9KyWZwn0kRnumBY"
+          "current_key": "AIzaSyB4OO6wUJIc8tFHZ-gJ12IHtf0ppr-aygU"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "40198793514-co9varn1o77q88hjcdq3b3ock8cu7t4s.apps.googleusercontent.com",
+              "client_id": "1031459320115-199eehvim0usn1hchvead6imvgc7i060.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "40198793514-k038lm8cmn86et8ha956k809mmf6njba.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.x691.dalapp"
-              }
             }
           ]
         }
