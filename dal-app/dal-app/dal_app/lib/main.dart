@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 
 import 'Main Interface/base_screen.dart';
 
-void main() {
+void main()  {
   runApp(MyApp());
 }
 
@@ -18,7 +18,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Crypto Traders',
       theme: ThemeData(
-        primarySwatch: Colors.amber,
+        primarySwatch: Colors.orange,
+        accentColor: Colors.blueGrey,
       ),
       home: MyHomePage(title: 'Dal App'),
     );

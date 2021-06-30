@@ -60,7 +60,7 @@ class BaseScreen extends StatelessWidget {
               // in order to force it's height to be 60, which looks good in the
               // app bar.
               title: SizedBox(
-                child: Image.asset("assets/dallogo.png"),
+                child: Image.asset("assets/logo.png"),
                 height: 60,
               ),
               actions: [

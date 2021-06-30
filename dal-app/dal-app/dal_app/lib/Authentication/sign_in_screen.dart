@@ -6,9 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
+import 'package:dal_app/Main Interface/profile_page.dart';
 import 'dallogo_back_button.dart';
-
 class SignInScreen extends StatefulWidget {
 
   SignInScreen({@required this.createAccount});
@@ -22,23 +21,17 @@ class _SignInScreenState extends State<SignInScreen> {
   VoidCallback callback;
 
   _SignInScreenState({@required this.callback});
-  void addData(){
 
-      Map<String, dynamic> demoData= {"Coin Name" : "Ethereum"};
-      CollectionReference collectionReference = FirebaseFirestore.instance
-          .collection("Currencies");
-      collectionReference.add(demoData);
-  }
   void signIn() async {
-    Map Currencies;
-
-
-
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text,
-        password: passwordController.text
-    );
-    print(FirebaseAuth.instance.currentUser.email);
+  await FirebaseAuth.instance.signInWithEmailAndPassword(
+  email: emailController.text,
+  password: passwordController.text
+  );
+  print(FirebaseAuth.instance.currentUser.email);
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => ProfileScreen()),
+  );
   }
 
   TextEditingController emailController = new TextEditingController();
@@ -118,7 +111,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             width: double.infinity,
                             height: 60,
                             child: MaterialButton(
-                              onPressed: ()=>addData(),
+                              onPressed: ()=>signIn(),
                               child: Text("Sign In", style: TextStyle(fontSize: 20),),
                               textColor: Colors.white,
                               color: Theme.of(context).primaryColor,

@@ -58,46 +58,46 @@ class _LandingScreenState extends State<LandingScreen> with AutomaticKeepAliveCl
     ProportionalSizes sizeManager = ProportionalSizes(context);
 
     return FutureBuilder<Object>(
-      future: wait(),
-      builder: (context, snapshot) {
-        if(!snapshot.hasData) {
-          return FullScreenLoader();
-        }
-        return SafeArea(
-          child: Stack(
-            children: [
-              AnimatedContainer(
-                child: SizedBox(height: 100, child: Image.asset("assets/dallogo.png")),
-                duration: Duration(seconds: 2),
-                curve: Curves.easeInOut,
-                alignment: _alignment,
-                onEnd: () => {
-                  this.setState(() {
-                    this.doneInitalAnimation = true;
-                  })
-                },
-              ),
-              AnimatedOpacity(
-                duration: Duration(seconds: 1),
-                opacity: this.doneInitalAnimation ? 1 : 0,
-                child: Padding(
-                  padding: EdgeInsets.all(sizeManager.padding),
-                  child: Stack(
-                    children: [
-                      Align(
-                        alignment: FractionalOffset.bottomCenter,
-                        child: SizedBox(
-                            width: double.infinity,
-                            height: 60,
-                            child: MaterialButton(
-                                child: Text("Continue"),
-                                color: Theme.of(context).primaryColor,
-                                onPressed: advance
+        future: wait(),
+        builder: (context, snapshot) {
+          if(!snapshot.hasData) {
+            return FullScreenLoader();
+          }
+          return SafeArea(
+            child: Stack(
+              children: [
+                AnimatedContainer(
+                  child: SizedBox(height: 400, width: 300 , child: Image.asset("assets/logo.png")),
+                  duration: Duration(seconds: 2),
+                  curve: Curves.easeInOut,
+                  alignment: _alignment,
+                  onEnd: () => {
+                    this.setState(() {
+                      this.doneInitalAnimation = true;
+                    })
+                  },
+                ),
+                AnimatedOpacity(
+                    duration: Duration(seconds: 1),
+                    opacity: this.doneInitalAnimation ? 1 : 0,
+                    child: Padding(
+                      padding: EdgeInsets.all(sizeManager.padding),
+                      child: Stack(
+                        children: [
+                          Align(
+                            alignment: FractionalOffset.bottomCenter,
+                            child: SizedBox(
+                              width: double.infinity,
+                              height: 80,
+                              child: MaterialButton(
+                                  child: Text("Continue"),
+                                  color: Theme.of(context).primaryColor,
+                                  onPressed: advance
+                              ),
                             ),
                           ),
-                      ),
-                      Center(
-                        child: Text("This is where we could eventually put some kind of a description of what the app does"),
+                          Center(
+                            child: Text("Crypto currency information app with current and historic crypto information."),
                       )
                     ],
                   ),

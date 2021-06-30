@@ -20,7 +20,7 @@ class DalLogoBackButton extends StatelessWidget {
           SizedBox(width: 10,),
           SizedBox(
             height: sizeManager.titleSize + 10,
-            child: Image.asset("assets/dallogosmall.png"),
+            child: Image.asset("assets/logosmall.png"),
           ),
         ],
       ),
