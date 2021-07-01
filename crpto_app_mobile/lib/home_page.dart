@@ -1,3 +1,4 @@
+import 'package:crpto_app_mobile/buy_page.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -47,16 +48,28 @@ class _HomePageState extends State<HomePage> {
   }
 
   ListTile _getListItemUi(Map currency){
+
+
     return ListTile(
       leading: CircleAvatar(
         child: Image.network(currency['image']),
       ),
 
-      title: Text(currency['name'],
-        style: const TextStyle(fontWeight: FontWeight.bold)),
+      title: TextButton(
+        style: ButtonStyle(),
+        onPressed: (){
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => BuyPage())
+          );
+        },
+
+        child: Text(currency['name'],
+         style: const TextStyle(fontWeight: FontWeight.bold)
+        )
+      ),
       trailing: _getSubtitleText(currency['current_price'].toString(), currency['price_change_percentage_24h'].toString()),
       subtitle: Text(currency['symbol']),
-
 
       isThreeLine: true,
     );

@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
-
+import 'package:crpto_app_mobile/buy_page.dart';
 
 class BuyPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+      return BuyPageITEM();
+  }
+}
+
+class BuyPageITEM extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,13 +50,9 @@ class BuyPage extends StatelessWidget {
                   margin: const EdgeInsets.all(30.0),
                   width: 350,
                   height: 200,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                          image: ExactAssetImage("assets/images/Bitcoin-Logo.png"),
-                          fit: BoxFit.fill
-                      )
-                  )
+                  child: CircleAvatar(
+                      child: Image.network(currency['image']),
+                  ),
               ),
 
               Container(
