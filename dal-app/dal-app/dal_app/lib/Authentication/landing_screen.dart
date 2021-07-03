@@ -1,113 +1,105 @@
-import 'dart:io';
-
-import 'package:dal_app/Authentication/sign_in_screen.dart';
-import 'package:dal_app/Misc.%20Views/FullScreenLoader.dart';
-import 'package:dal_app/ProportionalSizes.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class LandingScreen extends StatefulWidget {
-  VoidCallback advance;
+class HomePage extends StatefulWidget {
 
-  LandingScreen({@required this.advance});
+  final List currencies;
+  HomePage(this.currencies);
+
+  // const HomePage({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _LandingScreenState(advance: advance);
+  _HomePageState createState() => new _HomePageState();
 }
 
-class _LandingScreenState extends State<LandingScreen> with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
 
-  VoidCallback advance;
+class _HomePageState extends State<HomePage> {
 
-  bool get wantKeepAlive => true;
-
-  _LandingScreenState({@required this.advance});
-
-  Future<bool> wait() {
-    return Future.delayed(Duration(seconds: 1), () {
-      return true;
-    });
-  }
-
-  Alignment _alignment = FractionalOffset.center;
-  bool doneInitalAnimation = false;
-  void _changeAlignment() {
-    setState(() {
-      _alignment = Alignment.topCenter;
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Future.delayed(Duration(seconds: 2), () => {
-        _changeAlignment()
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
+  late List currencies;
+  //final List<MaterialColor> _colors = [Colors.amber, Colors.blueGrey, Colors.indigo];
 
   @override
   Widget build(BuildContext context) {
-
-    ProportionalSizes sizeManager = ProportionalSizes(context);
-
-    return FutureBuilder<Object>(
-      future: wait(),
-      builder: (context, snapshot) {
-        if(!snapshot.hasData) {
-          return FullScreenLoader();
-        }
-        return SafeArea(
-          child: Stack(
-            children: [
-              AnimatedContainer(
-                child: SizedBox(height: 100, child: Image.asset("assets/dallogo.png")),
-                duration: Duration(seconds: 2),
-                curve: Curves.easeInOut,
-                alignment: _alignment,
-                onEnd: () => {
-                  this.setState(() {
-                    this.doneInitalAnimation = true;
-                  })
-                },
-              ),
-              AnimatedOpacity(
-                duration: Duration(seconds: 1),
-                opacity: this.doneInitalAnimation ? 1 : 0,
-                child: Padding(
-                  padding: EdgeInsets.all(sizeManager.padding),
-                  child: Stack(
-                    children: [
-                      Align(
-                        alignment: FractionalOffset.bottomCenter,
-                        child: SizedBox(
-                            width: double.infinity,
-                            height: 60,
-                            child: MaterialButton(
-                                child: Text("Continue"),
-                                color: Theme.of(context).primaryColor,
-                                onPressed: advance
-                            ),
-                          ),
-                      ),
-                      Center(
-                        child: Text("This is where we could eventually put some kind of a description of what the app does"),
-                      )
-                    ],
-                  ),
-                )
-              ),
-            ],
-          ),
-        );
-      }
+    return new Scaffold(
+        appBar: AppBar(
+          title: Text("Cryptocurrency Tracker"),
+        ),
+        body: _cryptoWidget()
     );
   }
 
+  Widget _cryptoWidget(){
+    return Container(
+                child: ListView.builder(
+                  itemCount: 1,
+                  // ignore: unnecessary_new, unnecessary_new, unnecessary_new
+                  itemBuilder: (BuildContext context, int index){
+                    final Map currency = widget.currencies[index];
+                    //final MaterialColor = _colors[index % _colors.length];
+                    return _getCurrencyInfo(currency);
+                    },
+                )
+    );
+  }
+
+  Widget _getCurrencyInfo (Map currency) {
+    return Stack(
+      children: <Widget>[
+        Container (
+            padding: const EdgeInsets.all(20.0),
+            child: SizedBox(
+                height: 70,
+                width: 70,
+                child: Image.network(currency['image'])
+            ),
+        ),
+
+        Positioned (
+            top: 40,
+            right: 100,
+            child: SizedBox (
+              child: Text(
+                  currency['name'] + " - " + currency['symbol'],
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 35.0,
+                  )
+              )
+            ),
+        ),
+
+        Positioned (
+          top: 110,
+          left: 25,
+          child: Text(
+            "1 " + currency['symbol'] + " = " + currency['current_price'].toString(),
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 15.0,
+            )
+          )
+        ),
+      ],
+      overflow: Overflow.visible,
+    );
+  }
+
+  Widget _getSubtitleText(String priceUSD, String percentageChange){
+    TextSpan priceTextWidget = TextSpan(
+        text: "\$$priceUSD\n", style: TextStyle(color: Colors.black));
+
+    String percentageChangeText = "$percentageChange%";
+    TextSpan percentageChangeTextWidget;
+
+    if(double.parse(percentageChange) >0.0){
+      percentageChangeTextWidget = TextSpan(text: percentageChangeText, style: new TextStyle(color: Colors.green));
+    } else{
+      percentageChangeTextWidget = TextSpan(text: percentageChangeText, style: new TextStyle(color: Colors.red));
+    }
+
+    return RichText(
+        text: TextSpan(
+            children: [priceTextWidget, percentageChangeTextWidget]
+        )
+    );
+  }
 }
