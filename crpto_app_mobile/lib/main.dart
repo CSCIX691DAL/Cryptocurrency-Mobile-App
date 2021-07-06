@@ -6,7 +6,7 @@ import 'dart:async';
 
 void main() async{
   List currencies = await getCurrencies();
-  print(currencies);
+  //print(currencies);
   runApp(MyApp(currencies));
 }
 

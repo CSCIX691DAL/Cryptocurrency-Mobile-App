@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'information_page.dart';
+
 class HomePage extends StatefulWidget {
 
   final List currencies;
@@ -10,7 +12,6 @@ class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => new _HomePageState();
 }
-
 
 class _HomePageState extends State<HomePage> {
 
@@ -57,8 +58,15 @@ class _HomePageState extends State<HomePage> {
       trailing: _getSubtitleText(currency['current_price'].toString(), currency['price_change_percentage_24h'].toString()),
       subtitle: Text(currency['symbol']),
 
-
       isThreeLine: true,
+
+      onTap: (){
+        Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => InformationPage(currency))
+        );
+      },
+
     );
   }
 
