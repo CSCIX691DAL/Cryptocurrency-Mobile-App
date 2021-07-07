@@ -1,12 +1,14 @@
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dal_app/Authentication/authentication_screen.dart';
+import 'package:dal_app/Main%20Interface/profile_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'base_screen.dart';
 
-void main() {
+void main()  {
   runApp(MyApp());
 }
 
@@ -15,9 +17,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Dal App',
+      title: 'Crypto Traders',
       theme: ThemeData(
-        primarySwatch: Colors.amber,
+        primarySwatch: Colors.orange,
+        accentColor: Colors.blueGrey,
       ),
       home: MyHomePage(title: 'Dal App'),
     );
@@ -55,35 +58,35 @@ class _MyHomePageState extends State<MyHomePage> {
     // it will return our UI
 
     return FutureBuilder<FirebaseApp>(
-      future: Firebase.initializeApp(),
-      builder: (context, snapshot) {
-        //If this snapshot is not finished, return a view with only a spinning
-        //loading wheel in the center.
-        if(snapshot.connectionState != ConnectionState.done) {
-          return Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
+        future: Firebase.initializeApp(),
+        builder: (context, snapshot) {
+          //If this snapshot is not finished, return a view with only a spinning
+          //loading wheel in the center.
+          if(snapshot.connectionState != ConnectionState.done) {
+            return Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
+          if(snapshot.hasError) {
+            return Scaffold(
+              body: Center(
+                  child: Icon(Icons.error_outline, size: 100)
+              ),
+            );
+          }
+          return StreamBuilder<User>(
+            stream: FirebaseAuth.instance.userChanges(),
+            builder: (context, snap) {
+              if(FirebaseAuth.instance.currentUser != null) {
+                return ProfileScreen();
+              } else {
+                return AuthenticationScreen();
+              }
+            },
           );
         }
-        if(snapshot.hasError) {
-          return Scaffold(
-             body: Center(
-               child: Icon(Icons.error_outline, size: 100)
-             ),
-          );
-        }
-        return StreamBuilder<User>(
-          stream: FirebaseAuth.instance.userChanges(),
-          builder: (context, snap) {
-            if(FirebaseAuth.instance.currentUser != null) {
-              return BaseScreen();
-            } else {
-              return AuthenticationScreen();
-            }
-          },
-        );
-      }
     );
   }
 }

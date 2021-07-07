@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dal_app/Authentication/Sign%20Up/sign_up_screen.dart';
 import 'package:dal_app/Authentication/password_recovery.dart';
+import 'package:dal_app/Main%20Interface/buy_page.dart';
+import 'package:dal_app/Main%20Interface/home_page.dart';
+import 'package:dal_app/Main%20Interface/information_page.dart';
+import 'package:dal_app/Main%20Interface/sell_page.dart';
 import 'package:dal_app/Misc.%20Views/FullScreenLoader.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
