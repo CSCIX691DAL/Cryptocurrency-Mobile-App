@@ -1,17 +1,26 @@
 import 'package:flutter/material.dart';
 
-class BuyPage extends StatelessWidget {
+class SellPage extends StatelessWidget {
+
+  final Map currency;
+
+  SellPage(this.currency);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
             title: Text("Sell Coins"),
             leading: GestureDetector(
-              onTap: () { /* Write listener code here */ },
+              onTap: () {
+                Navigator.pop(context);
+              },
               child: Icon(
-                Icons.menu,  // add custom icons also
+                Icons.arrow_back,
+                size: 26.0,
               ),
             ),
+
             actions: <Widget>[
               Padding(
                   padding: EdgeInsets.only(right:20.0),
@@ -42,13 +51,9 @@ class BuyPage extends StatelessWidget {
                   margin: const EdgeInsets.all(30.0),
                   width: 350,
                   height: 200,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                          image: ExactAssetImage("assets/images/Bitcoin-Logo.png"),
-                          fit: BoxFit.fill
-                      )
-                  )
+                  child: CircleAvatar(
+                    child: Image.network(currency['image']),
+                ),
               ),
 
               Container(
@@ -57,7 +62,7 @@ class BuyPage extends StatelessWidget {
                   width: 175,
                   height: 60,
                   child: Center(
-                      child: Text("Bitcoin -- BTC",
+                      child: Text(currency['name'],
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.orange.withOpacity(1.0),
@@ -80,7 +85,7 @@ class BuyPage extends StatelessWidget {
               ),
 
               OutlinedButton(
-                  child: Text("Sell Crypto Currency"),
+                  child: Text("Sell " + currency['name'] + " Currency"),
                   onPressed: () => showDialog<String>(
                       context: context,
                       builder: (BuildContext context) => AlertDialog(

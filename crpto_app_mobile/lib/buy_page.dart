@@ -1,25 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:crpto_app_mobile/buy_page.dart';
+import 'home_page.dart';
 
 class BuyPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-      return BuyPageITEM();
-  }
-}
 
-class BuyPageITEM extends StatelessWidget {
+  final Map currency;
+
+  BuyPage(this.currency);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
             title: Text("Buy Coins"),
             leading: GestureDetector(
-              onTap: () { /* Write listener code here */ },
+              onTap: () {
+                Navigator.pop(context);
+              },
               child: Icon(
-                Icons.menu,  // add custom icons also
+                Icons.arrow_back,
+                size: 26.0,
               ),
             ),
+
             actions: <Widget>[
               Padding(
                   padding: EdgeInsets.only(right:20.0),
@@ -61,7 +64,7 @@ class BuyPageITEM extends StatelessWidget {
                   width: 175,
                   height: 60,
                   child: Center(
-                      child: Text("Bitcoin -- BTC",
+                      child: Text(currency['name'],
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.orange.withOpacity(1.0),
@@ -84,7 +87,7 @@ class BuyPageITEM extends StatelessWidget {
               ),
 
               OutlinedButton(
-                  child: Text("Buy Crypto Currency"),
+                  child: Text("Buy " + currency['name'] + " Currency"),
                   onPressed: () => showDialog<String>(
                       context: context,
                       builder: (BuildContext context) => AlertDialog(
