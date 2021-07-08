@@ -11,7 +11,6 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => new _HomePageState();
 }
 
-
 class _HomePageState extends State<HomePage> {
 
   late List currencies;
@@ -21,7 +20,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return new Scaffold(
         appBar: AppBar(
-          title: Text("Cryptocurrency Tracker"),
+          title: Text("  Currency                                      Account:"),
         ),
         body: _cryptoWidget()
     );
@@ -29,76 +28,45 @@ class _HomePageState extends State<HomePage> {
 
   Widget _cryptoWidget(){
     return Container(
+        child: new Column(
+          children: <Widget>[
+            Flexible(
                 child: ListView.builder(
-                  itemCount: 1,
+                  itemCount: widget.currencies.length,
                   // ignore: unnecessary_new, unnecessary_new, unnecessary_new
                   itemBuilder: (BuildContext context, int index){
                     final Map currency = widget.currencies[index];
                     //final MaterialColor = _colors[index % _colors.length];
-                    return _getCurrencyInfo(currency);
-                    },
+                    return _getListItemUi(currency);
+                  },
                 )
-    );
-  }
-
-  Widget _getCurrencyInfo (Map currency) {
-    return Stack(
-      children: <Widget>[
-        Container (
-            padding: const EdgeInsets.all(20.0),
-            child: SizedBox(
-                height: 70,
-                width: 70,
-                child: Image.network(currency['image'])
-            ),
-        ),
-
-        Positioned (
-            top: 40,
-            right: 100,
-            child: SizedBox (
-              child: Text(
-                  currency['name'] + " - " + currency['symbol'],
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 35.0,
-                  )
-              )
-            ),
-        ),
-
-        Positioned (
-          top: 110,
-          left: 25,
-          child: Text(
-            "1 " + currency['symbol'] + " = " + currency['current_price'].toString(),
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 15.0,
             )
-          )
-        ),
-      ],
-      overflow: Overflow.visible,
+          ],
+        ));
+  }
+
+  ListTile _getListItemUi(Map currency){
+    return ListTile(
+      leading: CircleAvatar(
+        child: Image.network(currency['image']),
+      ),
+
+      title: Text(currency['name'],
+          style: const TextStyle(fontWeight: FontWeight.bold)),
+      trailing: _userAmount(currency['current_price'].toString(), currency['symbol'].toString()),
+      subtitle: Text("Current Price: \$" + currency['current_price'].toString() + " USD"),
+
+      isThreeLine: true,
     );
   }
 
-  Widget _getSubtitleText(String priceUSD, String percentageChange){
+  Widget _userAmount(String priceUSD, String symbol){
     TextSpan priceTextWidget = TextSpan(
-        text: "\$$priceUSD\n", style: TextStyle(color: Colors.black));
-
-    String percentageChangeText = "$percentageChange%";
-    TextSpan percentageChangeTextWidget;
-
-    if(double.parse(percentageChange) >0.0){
-      percentageChangeTextWidget = TextSpan(text: percentageChangeText, style: new TextStyle(color: Colors.green));
-    } else{
-      percentageChangeTextWidget = TextSpan(text: percentageChangeText, style: new TextStyle(color: Colors.red));
-    }
+        text: "2.3 " + symbol + "    ", style: TextStyle(color: Colors.black, fontSize: 22));
 
     return RichText(
         text: TextSpan(
-            children: [priceTextWidget, percentageChangeTextWidget]
+            children: [priceTextWidget]
         )
     );
   }
