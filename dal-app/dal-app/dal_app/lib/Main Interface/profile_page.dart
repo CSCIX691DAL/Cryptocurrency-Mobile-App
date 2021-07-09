@@ -5,12 +5,15 @@ import 'package:dal_app/Main%20Interface/main.dart';
 import 'package:dal_app/Main%20Interface/portfolio.dart';
 import 'package:dal_app/Main%20Interface/sell_page.dart';
 import 'package:dal_app/constants.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'home_page.dart';
+import 'package:dal_app/Authentication/sign_in_screen.dart';
+
 
 class ProfileScreen extends StatefulWidget {
   VoidCallback advance;
@@ -24,6 +27,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen>
     with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
   VoidCallback advance;
+
 
   bool get wantKeepAlive => true;
 
@@ -104,13 +108,13 @@ class _ProfileScreenState extends State<ProfileScreen>
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: SizedBox(width: 50,
-                child: Text("Name: ", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                child: Text('Name: Test', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
               ),
             ),
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: SizedBox(width: 50,
-                child: Text("Email: ", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                child: Text("Email: " + FirebaseAuth.instance.currentUser.email, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
               ),
             ),
 
@@ -152,7 +156,6 @@ class _ProfileScreenState extends State<ProfileScreen>
       );
     }
   }
-
   SwapToPortfolio() async {
     List currencies = await getCurrencies();
     Navigator.push(
