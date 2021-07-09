@@ -1,11 +1,15 @@
 
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dal_app/Authentication/authentication_screen.dart';
+import 'package:dal_app/Main%20Interface/home_page.dart';
 import 'package:dal_app/Main%20Interface/profile_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 
 void main()  {
@@ -80,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
             stream: FirebaseAuth.instance.userChanges(),
             builder: (context, snap) {
               if(FirebaseAuth.instance.currentUser != null) {
-                return ProfileScreen();
+                return SwapToHome();
               } else {
                 return AuthenticationScreen();
               }
@@ -88,5 +92,17 @@ class _MyHomePageState extends State<MyHomePage> {
           );
         }
     );
+  }
+  SwapToHome() async {
+    List currencies = await getCurrencies();
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => HomePage(currencies)),
+    );
+  }
+  Future<List> getCurrencies() async{
+    String cryptoUrl = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false";
+    http.Response response = await http.get(Uri.parse(cryptoUrl));
+    return jsonDecode(response.body);
   }
 }

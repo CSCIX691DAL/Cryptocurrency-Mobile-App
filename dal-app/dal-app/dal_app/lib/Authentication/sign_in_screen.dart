@@ -1,17 +1,17 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dal_app/Authentication/Sign%20Up/sign_up_screen.dart';
+
 import 'package:dal_app/Authentication/password_recovery.dart';
-import 'package:dal_app/Main%20Interface/buy_page.dart';
 import 'package:dal_app/Main%20Interface/home_page.dart';
-import 'package:dal_app/Main%20Interface/information_page.dart';
-import 'package:dal_app/Main%20Interface/sell_page.dart';
+import 'package:dal_app/Main%20Interface/portfolio.dart';
 import 'package:dal_app/Misc.%20Views/FullScreenLoader.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:dal_app/Main Interface/profile_page.dart';
 import 'dallogo_back_button.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:dal_app/Main Interface/portfolio.dart';
+import 'dart:async';
 class SignInScreen extends StatefulWidget {
 
   SignInScreen({@required this.createAccount});
@@ -27,15 +27,18 @@ class _SignInScreenState extends State<SignInScreen> {
   _SignInScreenState({@required this.callback});
 
   void signIn() async {
-  await FirebaseAuth.instance.signInWithEmailAndPassword(
-  email: emailController.text,
-  password: passwordController.text
-  );
-  print(FirebaseAuth.instance.currentUser.email);
-  Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => ProfileScreen()),
-  );
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text
+    );
+    print(FirebaseAuth.instance.currentUser.email);
+
+    List currencies = await getCurrencies();
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => HomePage(currencies)),
+    );
   }
 
   TextEditingController emailController = new TextEditingController();
@@ -52,12 +55,12 @@ class _SignInScreenState extends State<SignInScreen> {
       padding = 20;
     }
     return StreamBuilder<Object>(
-      stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (context, snapshot) {
-        if(snapshot.hasData) {
-          return FullScreenLoader();
-        }
-        return SafeArea(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if(snapshot.hasData) {
+            return FullScreenLoader();
+          }
+          return SafeArea(
             child: SingleChildScrollView(
               child: ConstrainedBox(
                 constraints: BoxConstraints(
@@ -106,7 +109,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             TextButton(onPressed: ()=>{
                               Navigator.push(context, MaterialPageRoute(builder: (context) => PasswordRecoveryScreen())),
                             }, child: Text(
-                              "Forgot Your Password?"
+                                "Forgot Your Password?"
                             ))
                           ],
                         ),
@@ -145,9 +148,15 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
               ),
             ),
-        );
-      }
+          );
+        }
     );
   }
 
+}
+
+Future<List> getCurrencies() async{
+  String cryptoUrl = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false";
+  http.Response response = await http.get(Uri.parse(cryptoUrl));
+  return jsonDecode(response.body);
 }

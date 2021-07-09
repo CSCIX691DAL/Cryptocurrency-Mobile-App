@@ -1,46 +1,60 @@
-import 'package:flutter/material.dart';
-import 'package:dal_app/Main Interface/buy_page.dart';
 
-class BuyPage extends StatelessWidget {
+import 'package:dal_app/Main%20Interface/profile_page.dart';
+import 'package:dal_app/Main%20Interface/sell_page.dart';
+import 'package:flutter/material.dart';
+import 'package:dal_app/constants.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'dart:async';
+
+import '../constants.dart';
+
+class BuyPage extends StatefulWidget {
+  VoidCallback advance;
+
+  BuyPage({@required this.advance});
+
   @override
-  Widget build(BuildContext context) {
-    return BuyPageITEM();
-  }
+  State<StatefulWidget> createState() => _BuyPageState(advance: advance);
 }
 
-class BuyPageITEM extends StatelessWidget {
+class _BuyPageState extends State<BuyPage>
+    with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
+  VoidCallback advance;
+
+  bool get wantKeepAlive => true;
+
+  _BuyPageState({@required this.advance});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-            title: Text("Buy Coins"),
-            leading: GestureDetector(
-              onTap: () { /* Write listener code here */ },
-              child: Icon(
-                Icons.menu,  // add custom icons also
-              ),
+          backgroundColor: Theme.of(context).primaryColor,
+          title: Text("Buy Coins",
+            style: TextStyle(
+              color: Colors.black,
             ),
-            actions: <Widget>[
-              Padding(
-                  padding: EdgeInsets.only(right:20.0),
-                  child: GestureDetector(
-                    onTap: () {},
-                    child: Icon(
-                      Icons.search,
-                      size: 26.0,
-                    ),
-                  )
+          ),
+          actions: <Widget>[
+            PopupMenuButton(
+              icon: Icon(
+                Icons.menu,
+                color: Colors.black,
+                size: 40,
               ),
-              Padding(
-                  padding: EdgeInsets.only(right: 20.0),
-                  child: GestureDetector(
-                    onTap: () {},
-                    child: Icon(
-                        Icons.more_vert
-                    ),
-                  )
-              ),
-            ]
+              onSelected: choiceAction ,
+              itemBuilder: (BuildContext context){
+                return Constants.choices.map((String choice){
+                  return PopupMenuItem<String>(
+                    value: choice,
+                    child: Text(choice),
+                  );
+                }).toList();
+              },
+            )
+          ],
         ),
 
 
@@ -98,5 +112,28 @@ class BuyPageITEM extends StatelessWidget {
 
 
     );
+  }
+  void choiceAction (String choice){
+    if(choice == Constants.sellPage){
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => SellPage()),
+      );
+    }
+    else if(choice == Constants.buyPage){
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => BuyPage()),
+      );
+    }
+    else if(choice == Constants.profilePage){
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ProfileScreen()),
+      );
+    }
+    else if(choice == Constants.homePage){
+
+    }
   }
 }
