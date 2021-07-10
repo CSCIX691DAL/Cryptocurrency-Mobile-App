@@ -1,4 +1,6 @@
 
+import 'package:dal_app/Authentication/sign_in_screen.dart';
+import 'package:dal_app/Main%20Interface/portfolio.dart';
 import 'package:dal_app/Main%20Interface/profile_page.dart';
 import 'package:dal_app/Main%20Interface/sell_page.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import '../constants.dart';
+import 'home_page.dart';
 
 class BuyPage extends StatefulWidget {
   VoidCallback advance;
@@ -133,7 +136,30 @@ class _BuyPageState extends State<BuyPage>
       );
     }
     else if(choice == Constants.homePage){
-
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => SwapToHome()),
+      );
     }
+    else if(choice == Constants.portfolioPage){
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => SwapToPortfolio()),
+      );
+    }
+  }
+  SwapToPortfolio() async {
+    List currencies = await getCurrencies();
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => PortfolioPage(currencies)),
+    );
+  }
+  SwapToHome() async {
+    List currencies = await getCurrencies();
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => HomePage(currencies)),
+    );
   }
 }

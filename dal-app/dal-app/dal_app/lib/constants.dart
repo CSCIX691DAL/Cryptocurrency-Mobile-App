@@ -13,6 +13,4 @@ static const List<String> choices =<String> [
   portfolioPage
 ];
 
-
-
 }

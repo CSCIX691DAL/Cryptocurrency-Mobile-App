@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'home_page.dart';
+
 class HomePage extends StatefulWidget {
 
   final List currencies;
@@ -161,13 +162,16 @@ class _HomePageState extends State<HomePage> {
   }
 
   SwapToPortfolio() async {
+    CircularProgressIndicator();
     List currencies = await getCurrencies();
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => PortfolioPage(currencies)),
     );
+
   }
   SwapToHome() async {
+    CircularProgressIndicator();
     List currencies = await getCurrencies();
     Navigator.push(
       context,
