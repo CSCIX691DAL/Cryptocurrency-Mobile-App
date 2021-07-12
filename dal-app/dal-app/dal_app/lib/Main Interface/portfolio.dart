@@ -110,19 +110,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
     );
   }
   void choiceAction (String choice){
-    if(choice == Constants.sellPage){
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => SellPage()),
-      );
-    }
-    else if(choice == Constants.buyPage){
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => BuyPage()),
-      );
-    }
-    else if(choice == Constants.profilePage){
+    if(choice == Constants.profilePage){
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => ProfileScreen()),

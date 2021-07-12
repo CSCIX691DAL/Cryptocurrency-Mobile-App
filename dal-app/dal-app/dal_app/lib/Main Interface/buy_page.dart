@@ -1,63 +1,59 @@
-
-import 'package:dal_app/Authentication/sign_in_screen.dart';
+import 'dart:io';
+import 'package:dal_app/Main%20Interface/buy_page.dart';
 import 'package:dal_app/Main%20Interface/portfolio.dart';
-import 'package:dal_app/Main%20Interface/profile_page.dart';
 import 'package:dal_app/Main%20Interface/sell_page.dart';
-import 'package:flutter/material.dart';
+import 'package:dal_app/Main%20Interface/Buy_page.dart';
 import 'package:dal_app/constants.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
-
-import '../constants.dart';
 import 'home_page.dart';
+import 'package:dal_app/Authentication/sign_in_screen.dart';
 
-class BuyPage extends StatefulWidget {
-  VoidCallback advance;
+class BuyPage extends StatelessWidget {
 
-  BuyPage({@required this.advance});
+  final Map currency;
 
-  @override
-  State<StatefulWidget> createState() => _BuyPageState(advance: advance);
-}
-
-class _BuyPageState extends State<BuyPage>
-    with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
-  VoidCallback advance;
-
-  bool get wantKeepAlive => true;
-
-  _BuyPageState({@required this.advance});
+  BuyPage(this.currency);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).primaryColor,
-          title: Text("Buy Coins",
-            style: TextStyle(
-              color: Colors.black,
-            ),
-          ),
-          actions: <Widget>[
-            PopupMenuButton(
-              icon: Icon(
-                Icons.menu,
-                color: Colors.black,
-                size: 40,
-              ),
-              onSelected: choiceAction ,
-              itemBuilder: (BuildContext context){
-                return Constants.choices.map((String choice){
-                  return PopupMenuItem<String>(
-                    value: choice,
-                    child: Text(choice),
-                  );
-                }).toList();
+            title: Text("Buy Coins"),
+            leading: GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
               },
-            )
-          ],
+              child: Icon(
+                Icons.arrow_back,
+                size: 26.0,
+              ),
+            ),
+
+            actions: <Widget>[
+              Padding(
+                  padding: EdgeInsets.only(right:20.0),
+                  child: GestureDetector(
+                    onTap: () {},
+                    child: Icon(
+                      Icons.search,
+                      size: 26.0,
+                    ),
+                  )
+              ),
+              Padding(
+                  padding: EdgeInsets.only(right: 20.0),
+                  child: GestureDetector(
+                    onTap: () {},
+                    child: Icon(
+                        Icons.more_vert
+                    ),
+                  )
+              ),
+            ]
         ),
 
 
@@ -68,7 +64,7 @@ class _BuyPageState extends State<BuyPage>
                 width: 350,
                 height: 200,
                 child: CircleAvatar(
-                  // child: Image.network(currency['image']), commented this out to make code work
+                  child: Image.network(currency['image']),
                 ),
               ),
 
@@ -78,7 +74,7 @@ class _BuyPageState extends State<BuyPage>
                   width: 175,
                   height: 60,
                   child: Center(
-                      child: Text("Bitcoin -- BTC",
+                      child: Text(currency['name'],
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.orange.withOpacity(1.0),
@@ -101,7 +97,7 @@ class _BuyPageState extends State<BuyPage>
               ),
 
               OutlinedButton(
-                  child: Text("Buy Crypto Currency"),
+                  child: Text("Buy " + currency['name'] + " Currency"),
                   onPressed: () => showDialog<String>(
                       context: context,
                       builder: (BuildContext context) => AlertDialog(
@@ -114,52 +110,6 @@ class _BuyPageState extends State<BuyPage>
         )
 
 
-    );
-  }
-  void choiceAction (String choice){
-    if(choice == Constants.sellPage){
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => SellPage()),
-      );
-    }
-    else if(choice == Constants.buyPage){
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => BuyPage()),
-      );
-    }
-    else if(choice == Constants.profilePage){
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => ProfileScreen()),
-      );
-    }
-    else if(choice == Constants.homePage){
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => SwapToHome()),
-      );
-    }
-    else if(choice == Constants.portfolioPage){
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => SwapToPortfolio()),
-      );
-    }
-  }
-  SwapToPortfolio() async {
-    List currencies = await getCurrencies();
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => PortfolioPage(currencies)),
-    );
-  }
-  SwapToHome() async {
-    List currencies = await getCurrencies();
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => HomePage(currencies)),
     );
   }
 }

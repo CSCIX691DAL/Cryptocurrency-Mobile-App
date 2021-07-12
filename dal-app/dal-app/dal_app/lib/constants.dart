@@ -7,8 +7,6 @@ static const String portfolioPage = "Portfolio";
 
 static const List<String> choices =<String> [
   homePage,
-  buyPage,
-  sellPage,
   profilePage,
   portfolioPage
 ];

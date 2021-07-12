@@ -13,66 +13,62 @@ import 'package:http/http.dart' as http;
 
 import 'home_page.dart';
 
-class SellPage extends StatefulWidget {
-  VoidCallback advance;
+import 'package:flutter/material.dart';
 
-  SellPage({@required this.advance});
+class SellPage extends StatelessWidget {
 
-  @override
-  State<StatefulWidget> createState() => _SellPageState(advance: advance);
-}
+  final Map currency;
 
-class _SellPageState extends State<SellPage>
-    with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
-  VoidCallback advance;
+  SellPage(this.currency);
 
-  bool get wantKeepAlive => true;
-
-  _SellPageState({@required this.advance});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).primaryColor,
-          title: Text("Sell Coins",
-            style: TextStyle(
-              color: Colors.black,
-            ),
-          ),
-          actions: <Widget>[
-            PopupMenuButton(
-              icon: Icon(
-                Icons.menu,
-                color: Colors.black,
-                size: 40,
-              ),
-              onSelected: choiceAction ,
-              itemBuilder: (BuildContext context){
-                return Constants.choices.map((String choice){
-                  return PopupMenuItem<String>(
-                    value: choice,
-                    child: Text(choice),
-                  );
-                }).toList();
+            title: Text("Sell Coins"),
+            leading: GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
               },
-            )
-          ],
+              child: Icon(
+                Icons.arrow_back,
+                size: 26.0,
+              ),
+            ),
+
+            actions: <Widget>[
+              Padding(
+                  padding: EdgeInsets.only(right:20.0),
+                  child: GestureDetector(
+                    onTap: () {},
+                    child: Icon(
+                      Icons.search,
+                      size: 26.0,
+                    ),
+                  )
+              ),
+              Padding(
+                  padding: EdgeInsets.only(right: 20.0),
+                  child: GestureDetector(
+                    onTap: () {},
+                    child: Icon(
+                        Icons.more_vert
+                    ),
+                  )
+              ),
+            ]
         ),
 
 
         body: Center(
             child: Column( children: <Widget>[
               Container(
-                  margin: const EdgeInsets.all(30.0),
-                  width: 350,
-                  height: 200,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                          image: ExactAssetImage("assets/images/Bitcoin-Logo.png"),
-                          fit: BoxFit.fill
-                      )
-                  )
+                margin: const EdgeInsets.all(30.0),
+                width: 350,
+                height: 200,
+                child: CircleAvatar(
+                  child: Image.network(currency['image']),
+                ),
               ),
 
               Container(
@@ -81,7 +77,7 @@ class _SellPageState extends State<SellPage>
                   width: 175,
                   height: 60,
                   child: Center(
-                      child: Text("Bitcoin -- BTC",
+                      child: Text(currency['name'],
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.orange.withOpacity(1.0),
@@ -104,7 +100,7 @@ class _SellPageState extends State<SellPage>
               ),
 
               OutlinedButton(
-                  child: Text("Sell Crypto Currency"),
+                  child: Text("Sell " + currency['name'] + " Currency"),
                   onPressed: () => showDialog<String>(
                       context: context,
                       builder: (BuildContext context) => AlertDialog(
@@ -117,52 +113,6 @@ class _SellPageState extends State<SellPage>
         )
 
 
-    );
-  }
-  void choiceAction (String choice){
-    if(choice == Constants.sellPage){
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => SellPage()),
-      );
-    }
-    else if(choice == Constants.buyPage){
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => BuyPage()),
-      );
-    }
-    else if(choice == Constants.profilePage){
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => ProfileScreen()),
-      );
-    }
-    else if(choice == Constants.homePage){
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => SwapToHome()),
-      );
-    }
-    else if(choice == Constants.portfolioPage){
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => SwapToPortfolio()),
-      );
-    }
-  }
-  SwapToPortfolio() async {
-    List currencies = await getCurrencies();
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => PortfolioPage(currencies)),
-    );
-  }
-  SwapToHome() async {
-    List currencies = await getCurrencies();
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => HomePage(currencies)),
     );
   }
 }

@@ -1,16 +1,14 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:dal_app/Main%20Interface/buy_page.dart';
-import 'package:dal_app/Main%20Interface/main.dart';
 import 'package:dal_app/Main%20Interface/portfolio.dart';
 import 'package:dal_app/Main%20Interface/sell_page.dart';
+import 'package:dal_app/Main%20Interface/Buy_page.dart';
 import 'package:dal_app/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:http/http.dart' as http;
 import 'home_page.dart';
 import 'package:dal_app/Authentication/sign_in_screen.dart';
 
@@ -108,7 +106,7 @@ class _ProfileScreenState extends State<ProfileScreen>
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: SizedBox(width: 50,
-                child: Text('Name: Test', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                child: Text('Name: ', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
               ),
             ),
             Padding(
@@ -123,21 +121,8 @@ class _ProfileScreenState extends State<ProfileScreen>
       ),
     );
   }
-
   void choiceAction (String choice){
-    if(choice == Constants.sellPage){
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => SellPage()),
-      );
-    }
-    else if(choice == Constants.buyPage){
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => BuyPage()),
-      );
-    }
-    else if(choice == Constants.profilePage){
+    if(choice == Constants.profilePage){
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => ProfileScreen()),
@@ -157,6 +142,7 @@ class _ProfileScreenState extends State<ProfileScreen>
     }
   }
   SwapToPortfolio() async {
+
     List currencies = await getCurrencies();
     Navigator.push(
       context,
@@ -170,5 +156,6 @@ class _ProfileScreenState extends State<ProfileScreen>
       MaterialPageRoute(builder: (context) => HomePage(currencies)),
     );
   }
+
 }
 

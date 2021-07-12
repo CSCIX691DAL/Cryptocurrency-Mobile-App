@@ -129,19 +129,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
   void choiceAction (String choice){
-    if(choice == Constants.sellPage){
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => SellPage()),
-      );
-    }
-    else if(choice == Constants.buyPage){
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => BuyPage()),
-      );
-    }
-    else if(choice == Constants.profilePage){
+    if(choice == Constants.profilePage){
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => ProfileScreen()),
@@ -162,7 +150,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   SwapToPortfolio() async {
-    CircularProgressIndicator();
+    // CircularProgressIndicator();
     List currencies = await getCurrencies();
     Navigator.push(
       context,

@@ -1,7 +1,10 @@
 
+import 'package:dal_app/Main%20Interface/sell_page.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import 'buy_page.dart';
 
 class InformationPage extends StatelessWidget {
   //const InformationPage({Key? key}) : super(key: key);
@@ -128,14 +131,24 @@ class InformationPage extends StatelessWidget {
             SizedBox(height: 20,),
             Row(
               children: [
-                Expanded(child: _actionButton(
-                    text: 'Buy',
-                    color: Colors.blue
+                Expanded(child: ElevatedButton(
+                    child: Text( 'Buy'),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => BuyPage(currency)),
+                      );
+                    }
                 )),
                 SizedBox(width: 20,),
-                Expanded(child: _actionButton(
-                    text: 'Sell',
-                    color: Colors.pink
+                Expanded(child: ElevatedButton(
+                    child: Text( 'Sell'),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SellPage(currency)),
+                      );
+                    }
                 )),
               ],
             )
