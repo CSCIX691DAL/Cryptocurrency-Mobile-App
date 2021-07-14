@@ -12,6 +12,8 @@ import 'dart:async';
 import 'home_page.dart';
 import 'package:dal_app/Authentication/sign_in_screen.dart';
 
+import 'main.dart';
+
 
 class ProfileScreen extends StatefulWidget {
   VoidCallback advance;
@@ -140,6 +142,9 @@ class _ProfileScreenState extends State<ProfileScreen>
         MaterialPageRoute(builder: (context) => SwapToPortfolio()),
       );
     }
+    else if(choice == Constants.signOut){
+      _signOut();
+    }
   }
   SwapToPortfolio() async {
 
@@ -156,6 +161,13 @@ class _ProfileScreenState extends State<ProfileScreen>
       MaterialPageRoute(builder: (context) => HomePage(currencies)),
     );
   }
-
+  Future <MyApp> _signOut()  async{
+    await FirebaseAuth.instance.signOut();
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MyApp()),
+    );
+    return new MyApp();
+  }
 }
 
