@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dal_app/Main%20Interface/buy_page.dart';
 import 'package:dal_app/Main%20Interface/portfolio.dart';
 import 'package:dal_app/Main%20Interface/sell_page.dart';
@@ -17,6 +18,23 @@ class BuyPage extends StatelessWidget {
   final Map currency;
 
   BuyPage(this.currency);
+
+
+
+  final myController = TextEditingController();
+
+
+  void dispose() {
+    myController.dispose();
+  }
+
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Future.delayed(Duration(seconds: 2), () => {
+      });
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -89,6 +107,7 @@ class BuyPage extends StatelessWidget {
                 color: Colors.black54.withOpacity(0.1),
                 width: 175,
                 child: TextField(
+                  controller: myController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     hintText: "\$0.00",
@@ -98,12 +117,17 @@ class BuyPage extends StatelessWidget {
 
               OutlinedButton(
                   child: Text("Buy " + currency['name'] + " Currency"),
-                  onPressed: () => showDialog<String>(
+                  onPressed: () {
+                    showDialog<String>(
                       context: context,
                       builder: (BuildContext context) => AlertDialog(
-                          title: const Text('Crypto Currency Purchased!')
-                      )
-                  )
+                          title: Text(myController.text)
+                      ),
+                    );
+                    //deleteAll();
+                    buyWriteToDB(checkExistingEntry());
+                  }
+
               )
             ]
             )
@@ -112,4 +136,63 @@ class BuyPage extends StatelessWidget {
 
     );
   }
+  bool checkExistingEntry() {
+    var currentUserID = FirebaseAuth.instance.currentUser.uid;
+    var checkExisting = false;
+    CollectionReference coinReference = FirebaseFirestore.instance.collection("users").doc(currentUserID).collection("coins");
+    coinReference.limit(1).get().then((QuerySnapshot querySnapshot){
+
+      querySnapshot.docs.forEach((doc) {
+        if (doc["name"].toString() == currency["name"].toString()) {
+          checkExisting = true;
+          print(checkExisting);
+
+        }
+        else {
+          checkExisting = false;
+
+       }
+
+      });
+    });
+    return checkExisting;
+  }
+
+  void buyWriteToDB(checkExisting) async{
+    print(checkExisting);
+    var currentUserID = FirebaseAuth.instance.currentUser.uid;
+    CollectionReference coinReference = await FirebaseFirestore.instance.collection("users").doc(currentUserID).collection("coins");
+    if(myController.text.isEmpty){
+      myController.text = "0";
+    }
+
+    if(checkExisting == false){
+      //Map<String, dynamic> data = {"name" : currency["name"], "symbol": currency["symbol"], "image" : currency["image"], "balance" : myController.text};
+      return coinReference
+          .doc(currency["name"].toString())
+          .set({"name" : currency["name"], "symbol": currency["symbol"], "image" : currency["image"], "balance" : myController.text
+          });
+
+      //coinReference.add(data);
+    }
+    else{
+      coinReference
+          .doc(currency["name"])
+          .update({"balance" : myController.text});
+
+    }
+  }
+
+  void deleteAll() async{
+    var currentUserID = FirebaseAuth.instance.currentUser.uid;
+
+    FirebaseFirestore.instance.collection("users").doc(currentUserID)
+        .collection("coins").get()
+        .then((QuerySnapshot snapshot) {
+      snapshot.docs.forEach((doc) async {
+        await doc.reference.delete();
+      });
+    });
+  }
+
 }
