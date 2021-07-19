@@ -6,6 +6,7 @@ import 'package:dal_app/Main%20Interface/sell_page.dart';
 import 'package:dal_app/Main%20Interface/Buy_page.dart';
 import 'package:dal_app/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,10 @@ class BuyPage extends StatelessWidget {
 
 
   final myController = TextEditingController();
+  var checkExisting = false;
+  var userBalance = 0;
+
+
 
 
   void dispose() {
@@ -108,6 +113,7 @@ class BuyPage extends StatelessWidget {
                 width: 175,
                 child: TextField(
                   controller: myController,
+                  keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     hintText: "\$0.00",
@@ -125,7 +131,9 @@ class BuyPage extends StatelessWidget {
                       ),
                     );
                     //deleteAll();
-                    buyWriteToDB(checkExistingEntry());
+
+                    //getUserBalance();
+                    buyWriteToDB(checkExistingEntry(),getUserBalance());
                   }
 
               )
@@ -138,47 +146,80 @@ class BuyPage extends StatelessWidget {
   }
   bool checkExistingEntry() {
     var currentUserID = FirebaseAuth.instance.currentUser.uid;
-    var checkExisting = false;
+
+
     CollectionReference coinReference = FirebaseFirestore.instance.collection("users").doc(currentUserID).collection("coins");
-    coinReference.limit(1).get().then((QuerySnapshot querySnapshot){
+    coinReference.get().then((QuerySnapshot querySnapshot){
 
       querySnapshot.docs.forEach((doc) {
+        print("docname: " + doc["name"]);
+        print("currency name: " + currency['name']);
         if (doc["name"].toString() == currency["name"].toString()) {
           checkExisting = true;
+
+
+
           print(checkExisting);
+          print("!!!");
 
         }
-        else {
-          checkExisting = false;
 
-       }
 
       });
     });
     return checkExisting;
+
   }
 
-  void buyWriteToDB(checkExisting) async{
+    int getUserBalance() {
+    var currentUserID = FirebaseAuth.instance.currentUser.uid;
+
+    CollectionReference coinReference = FirebaseFirestore.instance.collection("users").doc(currentUserID).collection("coins");
+    coinReference.get()
+        .then((QuerySnapshot balanceSnapshot){
+          balanceSnapshot.docs.forEach((doc) {
+            //print(doc["balance"]);
+            if(doc["name"].toString() == currency["name"].toString()){
+              userBalance = doc["balance"];
+              print(userBalance);
+              print("YES");
+
+            }
+
+
+          });
+    });
+
+    print(userBalance);
+    return userBalance;
+  }
+
+ void buyWriteToDB(checkExisting, int userBalance) async{
+    //print(userBalance);
     print(checkExisting);
     var currentUserID = FirebaseAuth.instance.currentUser.uid;
     CollectionReference coinReference = await FirebaseFirestore.instance.collection("users").doc(currentUserID).collection("coins");
-    if(myController.text.isEmpty){
-      myController.text = "0";
-    }
+
 
     if(checkExisting == false){
+
       //Map<String, dynamic> data = {"name" : currency["name"], "symbol": currency["symbol"], "image" : currency["image"], "balance" : myController.text};
       return coinReference
           .doc(currency["name"].toString())
-          .set({"name" : currency["name"], "symbol": currency["symbol"], "image" : currency["image"], "balance" : myController.text
+          .set({"name" : currency["name"], "symbol": currency["symbol"], "image" : currency["image"], "balance" : int.parse(myController.text)
           });
 
       //coinReference.add(data);
     }
     else{
-      coinReference
-          .doc(currency["name"])
-          .update({"balance" : myController.text});
+      //print("controller: " + myController.text);
+      int controllerInt = int.parse(myController.text);
+      int totalBalance = (userBalance + controllerInt);
+      print("userBalance: ");
+      print(userBalance);
+      //print(controllerInt);
+      //print(totalBalance.toString());
+      coinReference.doc(currency["name"]).update({"balance" : totalBalance});
 
     }
   }
