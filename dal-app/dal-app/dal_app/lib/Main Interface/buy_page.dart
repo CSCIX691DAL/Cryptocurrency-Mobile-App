@@ -17,14 +17,14 @@ import 'package:dal_app/Authentication/sign_in_screen.dart';
 class BuyPage extends StatelessWidget {
 
   final Map currency;
-
+  final currentUser = FirebaseAuth.instance.currentUser.uid;
   BuyPage(this.currency);
+  var userBalance = 0;
 
+  var checkExisting = false;
 
 
   final myController = TextEditingController();
-  var checkExisting = false;
-  var userBalance = 0;
 
 
 
@@ -132,8 +132,12 @@ class BuyPage extends StatelessWidget {
                     );
                     //deleteAll();
 
-                    //getUserBalance();
-                    buyWriteToDB(checkExistingEntry(),getUserBalance());
+                    getUserBalance();
+                    checkExistingEntry();
+                    Timer(Duration(seconds: 2), ()
+                    {
+                      buyWriteToDB(checkExisting, userBalance);
+                    });
                   }
 
               )
@@ -145,44 +149,34 @@ class BuyPage extends StatelessWidget {
     );
   }
   bool checkExistingEntry() {
-    var currentUserID = FirebaseAuth.instance.currentUser.uid;
 
 
-    CollectionReference coinReference = FirebaseFirestore.instance.collection("users").doc(currentUserID).collection("coins");
+    CollectionReference coinReference = FirebaseFirestore.instance.collection("users").doc(currentUser).collection("coins");
     coinReference.get().then((QuerySnapshot querySnapshot){
 
       querySnapshot.docs.forEach((doc) {
-        print("docname: " + doc["name"]);
-        print("currency name: " + currency['name']);
+
         if (doc["name"].toString() == currency["name"].toString()) {
           checkExisting = true;
 
 
 
-          print(checkExisting);
-          print("!!!");
 
         }
-
 
       });
     });
     return checkExisting;
-
   }
 
-    int getUserBalance() {
-    var currentUserID = FirebaseAuth.instance.currentUser.uid;
-
-    CollectionReference coinReference = FirebaseFirestore.instance.collection("users").doc(currentUserID).collection("coins");
+    Future<int> getUserBalance() async{
+    CollectionReference coinReference = await FirebaseFirestore.instance.collection("users").doc(currentUser).collection("coins");
     coinReference.get()
         .then((QuerySnapshot balanceSnapshot){
           balanceSnapshot.docs.forEach((doc) {
-            //print(doc["balance"]);
             if(doc["name"].toString() == currency["name"].toString()){
               userBalance = doc["balance"];
-              print(userBalance);
-              print("YES");
+
 
             }
 
@@ -190,21 +184,18 @@ class BuyPage extends StatelessWidget {
           });
     });
 
-    print(userBalance);
     return userBalance;
   }
 
- void buyWriteToDB(checkExisting, int userBalance) async{
-    //print(userBalance);
-    print(checkExisting);
-    var currentUserID = FirebaseAuth.instance.currentUser.uid;
-    CollectionReference coinReference = await FirebaseFirestore.instance.collection("users").doc(currentUserID).collection("coins");
+ Future<void> buyWriteToDB(checkExisting, userBalance) async{
+
+
+    CollectionReference coinReference = await FirebaseFirestore.instance.collection("users").doc(currentUser).collection("coins");
 
 
     if(checkExisting == false){
-
       //Map<String, dynamic> data = {"name" : currency["name"], "symbol": currency["symbol"], "image" : currency["image"], "balance" : myController.text};
-      return coinReference
+      coinReference
           .doc(currency["name"].toString())
           .set({"name" : currency["name"], "symbol": currency["symbol"], "image" : currency["image"], "balance" : int.parse(myController.text)
           });
@@ -212,22 +203,18 @@ class BuyPage extends StatelessWidget {
       //coinReference.add(data);
     }
     else{
-      //print("controller: " + myController.text);
+
       int controllerInt = int.parse(myController.text);
       int totalBalance = (userBalance + controllerInt);
-      print("userBalance: ");
-      print(userBalance);
-      //print(controllerInt);
-      //print(totalBalance.toString());
+
       coinReference.doc(currency["name"]).update({"balance" : totalBalance});
 
     }
   }
 
   void deleteAll() async{
-    var currentUserID = FirebaseAuth.instance.currentUser.uid;
 
-    FirebaseFirestore.instance.collection("users").doc(currentUserID)
+    FirebaseFirestore.instance.collection("users").doc(currentUser)
         .collection("coins").get()
         .then((QuerySnapshot snapshot) {
       snapshot.docs.forEach((doc) async {
