@@ -6,6 +6,7 @@ import 'package:dal_app/Authentication/Sign%20Up/sign_up_personal_info.dart';
 import 'package:dal_app/Misc.%20Views/FullScreenLoader.dart';
 import 'package:dal_app/Misc.%20Views/page_dots.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -99,6 +100,9 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
               "email" : email,
               "firstAuth": true
             }
+        );
+        await FirebaseFirestore.instance.collection("users").doc(user.user.uid).collection("coins").doc("init").set(
+          {"exists" : true}
         );
     }
 

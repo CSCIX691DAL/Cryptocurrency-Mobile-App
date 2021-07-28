@@ -131,7 +131,7 @@ class BuyPage extends StatelessWidget {
                       ),
                     );
                     //deleteAll();
-
+                    deleteInitDoc();
                     getUserBalance();
                     checkExistingEntry();
                     Timer(Duration(seconds: 2), ()
@@ -219,6 +219,27 @@ class BuyPage extends StatelessWidget {
         .then((QuerySnapshot snapshot) {
       snapshot.docs.forEach((doc) async {
         await doc.reference.delete();
+      });
+    });
+  }
+  Future<void>deleteInitDoc() async {
+    var currentUser = FirebaseAuth.instance.currentUser.uid;
+    CollectionReference coinReference = FirebaseFirestore.instance.collection("users").doc(currentUser).collection("coins");
+    DocumentReference initReference = await FirebaseFirestore.instance.collection("users").doc(currentUser).collection("coins").doc("init");
+
+    coinReference.get().then((QuerySnapshot querySnapshot){
+
+      querySnapshot.docs.forEach((doc) {
+        print(doc["name"]);
+        if (identical(doc["name"].toString(), "init")) {
+          print("deleted");
+          return initReference.delete();
+
+        }
+        else{
+          print("if not triggered");
+        }
+
       });
     });
   }
