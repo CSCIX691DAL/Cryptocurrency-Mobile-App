@@ -196,7 +196,7 @@ class SellPage extends StatelessWidget {
     }
     int totalBalance = (userBalance - controllerInt);
     if(totalBalance < 0){
-
+      totalBalance = 0;
     }
 
 

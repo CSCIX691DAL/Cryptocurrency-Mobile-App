@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dal_app/Main%20Interface/profile_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,8 @@ class PortfolioPage extends StatefulWidget {
   final List currencies;
   PortfolioPage(this.currencies);
 
+  var results = FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser.uid).get();
+
   // const HomePage({Key? key}) : super(key: key);
 
   @override
@@ -26,83 +29,88 @@ class PortfolioPage extends StatefulWidget {
 }
 
 class _PortfolioPageState extends State<PortfolioPage> {
-
+  var results;
   List currencies;
-  //final List<MaterialColor> _colors = [Colors.amber, Colors.blueGrey, Colors.indigo];
+  var currentUser = FirebaseAuth.instance.currentUser.uid;
+  _PortfolioPageState();
 
+
+  //final List<MaterialColor> _colors = [Colors.amber, Colors.blueGrey, Colors.indigo];
+  Future getUserCurrency() async {
+    var coinReference = FirebaseFirestore.instance.collection("users").doc(
+        FirebaseAuth.instance.currentUser.uid).collection("coins");
+
+    QuerySnapshot coin = await coinReference.get();
+
+    return coin;
+  }
   @override
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Theme.of(context).primaryColor,
-            title: Text("Portfolio",
-              style: TextStyle(
-                color: Colors.black,
-              ),
+        appBar: AppBar(
+          backgroundColor: Theme
+              .of(context)
+              .primaryColor,
+          title: Text("Portfolio",
+            style: TextStyle(
+              color: Colors.black,
             ),
-            actions: <Widget>[
-              PopupMenuButton(
-                icon: Icon(
-                  Icons.menu,
-                  color: Colors.black,
-                  size: 40,
-                ),
-                onSelected: choiceAction ,
-                itemBuilder: (BuildContext context){
-                  return Constants.choices.map((String choice){
-                    return PopupMenuItem<String>(
-                      value: choice,
-                      child: Text(choice),
-                    );
-                  }).toList();
-                },
-              )
-            ],
           ),
-          body: _cryptoWidget()
-      ),
-    );
-  }
-
-  Widget _cryptoWidget(){
-    return Container(
-        child: new Column(
-          children: <Widget>[
-            Flexible(
-                child: ListView.builder(
-                  itemCount: widget.currencies.length,
-                  // ignore: unnecessary_new, unnecessary_new, unnecessary_new
-                  itemBuilder: (BuildContext context, int index){
-                    final Map currency = widget.currencies[index];
-                    //final MaterialColor = _colors[index % _colors.length];
-                    return _getListItemUi(currency);
-                  },
-                )
+          actions: <Widget>[
+            PopupMenuButton(
+              icon: Icon(
+                Icons.menu,
+                color: Colors.black,
+                size: 40,
+              ),
+              onSelected: choiceAction,
+              itemBuilder: (BuildContext context) {
+                return Constants.choices.map((String choice) {
+                  return PopupMenuItem<String>(
+                    value: choice,
+                    child: Text(choice),
+                  );
+                }).toList();
+              },
             )
           ],
-        ));
-  }
+        ),
+        body: StreamBuilder(
+            stream: FirebaseFirestore.instance.collection('users').doc(
+                currentUser).collection("coins").snapshots(),
+            builder: (BuildContext context,
+                AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (!snapshot.hasData) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
 
-  ListTile _getListItemUi(Map currency){
-    return ListTile(
-      leading: CircleAvatar(
-        child: Image.network(currency['image']),
+              return ListView(
+                children: snapshot.data.docs.map((DocumentSnapshot document){
+                  return ListTile(
+                    leading: CircleAvatar(
+                      child: Image.network(document["image"]),
+                    ),
+                    title: Text(document['name'],
+                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                    trailing: _userAmount(document["balance"], document["symbol"]),
+                  );
+
+                }).toList(),
+              );
+            }
+        ),
       ),
-
-      title: Text(currency['name'],
-          style: const TextStyle(fontWeight: FontWeight.bold)),
-      trailing: _userAmount(currency['current_price'].toString(), currency['symbol'].toString()),
-      subtitle: Text("Current Price: \$" + currency['current_price'].toString() + " USD"),
-
-      isThreeLine: true,
     );
+
   }
 
-  Widget _userAmount(String priceUSD, String symbol){
+  Widget _userAmount(int priceUSD, String symbol){
     TextSpan priceTextWidget = TextSpan(
-        text: "2.3 " + symbol + "    ", style: TextStyle(color: Colors.black, fontSize: 22));
+        text: priceUSD.toString() + " " + symbol + "    ", style: TextStyle(color: Colors.black, fontSize: 22));
 
     return RichText(
         text: TextSpan(
@@ -110,6 +118,21 @@ class _PortfolioPageState extends State<PortfolioPage> {
         )
     );
   }
+
+  Future<List> getCurrencies() async{
+    String cryptoUrl = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false";
+    http.Response response = await http.get(Uri.parse(cryptoUrl));
+    return jsonDecode(response.body);
+  }
+  Future <MyApp> _signOut()  async{
+    await FirebaseAuth.instance.signOut();
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MyApp()),
+    );
+    return new MyApp();
+  }
+
   void choiceAction (String choice){
     if(choice == Constants.profilePage){
       Navigator.push(
@@ -148,17 +171,5 @@ class _PortfolioPageState extends State<PortfolioPage> {
       MaterialPageRoute(builder: (context) => HomePage(currencies)),
     );
   }
-  Future<List> getCurrencies() async{
-    String cryptoUrl = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false";
-    http.Response response = await http.get(Uri.parse(cryptoUrl));
-    return jsonDecode(response.body);
-  }
-  Future <MyApp> _signOut()  async{
-    await FirebaseAuth.instance.signOut();
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => MyApp()),
-    );
-    return new MyApp();
-  }
+
 }

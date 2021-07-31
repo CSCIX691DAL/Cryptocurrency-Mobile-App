@@ -230,14 +230,14 @@ class BuyPage extends StatelessWidget {
     coinReference.get().then((QuerySnapshot querySnapshot){
 
       querySnapshot.docs.forEach((doc) {
-        print(doc["name"]);
+
         if (identical(doc["name"].toString(), "init")) {
-          print("deleted");
+
           return initReference.delete();
 
         }
         else{
-          print("if not triggered");
+
         }
 
       });
